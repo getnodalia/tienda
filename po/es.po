@@ -3812,3 +3812,19 @@ msgstr "NXPM no encontró software instalado."
 #: src/bz-nxpm-page.blp:0
 msgid "NXPM has no Nodalia apps to offer."
 msgstr "NXPM no tiene apps de Nodalia que ofrecer."
+
+#: src/bz-preferences-dialog.blp
+msgid "Window"
+msgstr "Ventana"
+
+#: src/bz-preferences-dialog.blp
+msgid "_Desktop Window Controls"
+msgstr "Controles de ventana del _escritorio"
+
+#: src/bz-preferences-dialog.blp
+msgid ""
+"Use the desktop's own minimize, maximize and close buttons. Takes effect the "
+"next time the Store starts"
+msgstr ""
+"Usa los botones de minimizar, maximizar y cerrar del propio escritorio. Se "
+"aplica la próxima vez que se abra la Tienda"

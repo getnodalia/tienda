@@ -74,6 +74,7 @@ struct _BzPreferencesDialog
   /* Template widgets */
   GtkCheckButton *automatic_updates_check;
   AdwSwitchRow   *auto_notif_switch;
+  AdwSwitchRow   *system_controls_switch;
   AdwSwitchRow   *only_foss_switch;
   AdwSwitchRow   *only_flathub_switch;
   AdwSwitchRow   *only_verified_switch;
@@ -214,6 +215,10 @@ bind_settings (BzPreferencesDialog *self)
 
   g_settings_bind (self->settings, "auto-update-notifications",
                    self->auto_notif_switch, "active",
+                   G_SETTINGS_BIND_DEFAULT);
+
+  g_settings_bind (self->settings, "system-window-controls",
+                   self->system_controls_switch, "active",
                    G_SETTINGS_BIND_DEFAULT);
 
   g_signal_connect_object (
@@ -394,6 +399,7 @@ bz_preferences_dialog_class_init (BzPreferencesDialogClass *klass)
   gtk_widget_class_bind_template_child (widget_class, BzPreferencesDialog, hide_eol_switch);
   gtk_widget_class_bind_template_child (widget_class, BzPreferencesDialog, automatic_updates_check);
   gtk_widget_class_bind_template_child (widget_class, BzPreferencesDialog, auto_notif_switch);
+  gtk_widget_class_bind_template_child (widget_class, BzPreferencesDialog, system_controls_switch);
   gtk_widget_class_bind_template_callback (widget_class, auto_updates_toggled_cb);
 }
 
