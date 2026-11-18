@@ -55,6 +55,11 @@
       <summary>Saved Window Dimensions</summary>
       <description>The window dimensions to be used by the next Store window</description>
     </key>
+    <key name="system-window-controls" type="b">
+      <default>false</default>
+      <summary>Desktop Window Controls</summary>
+      <description>Use the desktop's own minimize, maximize and close buttons instead of Nodalia's round ones. Read at startup</description>
+    </key>
     <key name="force-adwaita-icons" type="b">
       <default>true</default>
       <summary>Force Adwaita Icon Theme</summary>

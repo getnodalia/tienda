@@ -77,6 +77,12 @@
   </screenshots>
 
   <releases>
+    <release version="0.6.1" date="2026-11-18">
+      <description>
+        <p>Preferences has a new Window section: the Store can use the desktop's own minimize, maximize and close buttons instead of Nodalia's round ones.</p>
+        <p>The Store no longer closes at startup on a system without a system bus.</p>
+      </description>
+    </release>
     <release version="0.6.0" date="2026-11-13">
       <description>
         <p>Nodalix Store uses the Nodalia Design Language across the whole app, with its window controls, category tiles and status colours.</p>

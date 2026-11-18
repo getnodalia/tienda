@@ -26,6 +26,11 @@ que NDL documenta para las apps GTK existentes.
 - Los botones de la ventana son los de NDL: `bz-ndl-theme.c` cambia los iconos
   `window-*-symbolic` por los `ndl-window-*` y centra los controles en la
   cabecera, que es más alta que ellos.
+- Preferencias ▸ Ventana ▸ «Controles de ventana del escritorio» (clave
+  `system-window-controls`) usa los botones del escritorio en lugar de los
+  redondos de NDL: sin cambiar sus iconos ni su orden, planos y con un disco
+  suave bajo el puntero, como `WindowControls::System` de nodalia-gtk. Se lee
+  al arrancar.
 - `NODALIX_NDL=0` desactiva la capa y deja libadwaita tal cual, para depurar.
 
 ## Estado

@@ -109,6 +109,40 @@ use_ndl_glyph (GtkImage *image)
   window_glyph_notify_cb (image);
 }
 
+/* The desktop's controls: plain buttons over its own glyphs, a soft disc under
+ * the pointer. Same rules as nodalia-gtk's WindowControls::System. */
+static const char system_controls_css[] =
+    "headerbar windowcontrols > button:not(.suggested-action):not(.destructive-action),"
+    "headerbar windowcontrols > button:not(.suggested-action):not(.destructive-action).close:hover,"
+    "headerbar windowcontrols > button:not(.suggested-action):not(.destructive-action).maximize:hover {"
+    "  background-color: transparent;"
+    "  color: var(--ndl-color-text-primary);"
+    "  -gtk-icon-size: 16px;"
+    "}"
+    "headerbar windowcontrols > button:not(.suggested-action):not(.destructive-action):hover,"
+    "headerbar windowcontrols > button:not(.suggested-action):not(.destructive-action).close:hover,"
+    "headerbar windowcontrols > button:not(.suggested-action):not(.destructive-action).maximize:hover {"
+    "  background-color: var(--ndl-color-control-bg-hover);"
+    "}";
+
+/* Whether the person asked for the desktop's window controls (Preferences ▸
+ * Window). Read once: the icon theme and the button layout are set at start. */
+static gboolean
+wants_system_controls (void)
+{
+  GSettingsSchemaSource *source = g_settings_schema_source_get_default ();
+  g_autoptr (GSettingsSchema) schema = NULL;
+  g_autoptr (GSettings) settings     = NULL;
+
+  if (source == NULL)
+    return FALSE;
+  schema = g_settings_schema_source_lookup (source, APPLICATION_ID, TRUE);
+  if (schema == NULL || !g_settings_schema_has_key (schema, "system-window-controls"))
+    return FALSE;
+  settings = g_settings_new (APPLICATION_ID);
+  return g_settings_get_boolean (settings, "system-window-controls");
+}
+
 /* The header is as tall as its tallest child (the view switcher, a search
  * entry), and the buttons of the window controls are stretched to that height,
  * which turns the round NDL controls into ovals. Centre the controls and their
@@ -162,6 +196,7 @@ bz_ndl_theme_init (void)
   AdwStyleManager *manager = NULL;
   const char      *opt_out = NULL;
   guint            map_signal = 0;
+  gboolean         system_controls = FALSE;
 
   if (installed)
     return;
@@ -177,17 +212,22 @@ bz_ndl_theme_init (void)
   installed = TRUE;
   manager   = adw_style_manager_get_for_display (display);
 
-  /* NDL windows have the three round controls. The desktop's own button
-   * layout often leaves only "close", so ask for all three here. */
-  g_object_set (gtk_settings_get_for_display (display),
-                "gtk-decoration-layout", ":minimize,maximize,close",
-                NULL);
+  system_controls = wants_system_controls ();
 
-  /* The class must exist before its signal can be looked up. */
-  g_type_class_ref (GTK_TYPE_WIDGET);
-  map_signal = g_signal_lookup ("map", GTK_TYPE_WIDGET);
-  if (map_signal != 0)
-    g_signal_add_emission_hook (map_signal, 0, window_controls_map_hook, NULL, NULL);
+  if (!system_controls)
+    {
+      /* NDL windows have the three round controls. The desktop's own button
+       * layout often leaves only "close", so ask for all three here. */
+      g_object_set (gtk_settings_get_for_display (display),
+                    "gtk-decoration-layout", ":minimize,maximize,close",
+                    NULL);
+
+      /* The class must exist before its signal can be looked up. */
+      g_type_class_ref (GTK_TYPE_WIDGET);
+      map_signal = g_signal_lookup ("map", GTK_TYPE_WIDGET);
+      if (map_signal != 0)
+        g_signal_add_emission_hook (map_signal, 0, window_controls_map_hook, NULL, NULL);
+    }
 
   /* Order matters among providers of one priority: colours first, then the
    * metrics and the widget sheet that read them, then the Nodalix overrides. */
@@ -207,6 +247,15 @@ bz_ndl_theme_init (void)
    * application priority) so they take NDL's look. */
   install_resource_at (display, "nodalix-store.css",
                        GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 10);
+
+  if (system_controls)
+    {
+      g_autoptr (GtkCssProvider) provider = gtk_css_provider_new ();
+
+      gtk_css_provider_load_from_string (provider, system_controls_css);
+      gtk_style_context_add_provider_for_display (
+          display, GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 11);
+    }
 
   g_signal_connect (manager, "notify::dark", G_CALLBACK (style_changed_cb), NULL);
   g_signal_connect (manager, "notify::high-contrast", G_CALLBACK (style_changed_cb), NULL);

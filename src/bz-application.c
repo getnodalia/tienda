@@ -2346,7 +2346,8 @@ init_fiber_finally (DexFuture *future,
           /* Check every day */
           60 * 60 * 24, (GSourceFunc) periodic_timeout_cb, self);
 
-      bz_malcontent_service_start (self->malcontent);
+      if (self->malcontent != NULL)
+        bz_malcontent_service_start (self->malcontent);
 
       g_object_bind_property (
           bz_state_info_get_auth_state (self->state), "authenticated",
