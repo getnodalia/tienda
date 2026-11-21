@@ -20,7 +20,7 @@ jobs:
             desktop-file-utils appstream gtk4 libadwaita libdex flatpak libxmlb libyaml libsoup3 \
             json-glib glycin glycin-gtk4 webkitgtk-6.0 libsecret libproxy malcontent \
             gtksourceview5 md4c systemd-libs dbus python python-babel perl glib2-devel
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
